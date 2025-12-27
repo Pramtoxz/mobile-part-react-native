@@ -78,8 +78,8 @@ const LoginScreen: React.FC = () => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.headerSection}>
-          <Text style={styles.welcomeText}>Welcome Back!</Text>
-          <Text style={styles.subtitleText}>Please login to continue</Text>
+          <Text style={styles.welcomeText}>Mobile Part Ordering</Text>
+          <Text style={styles.subtitleText}>Salam SATU HATI Silahkan masukan akun untuk mengakses aplikasi</Text>
         </View>
 
         <View style={styles.formCard}>
@@ -143,15 +143,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   headerSection: {
-    paddingTop: 80,
+    paddingTop: 100,
     paddingHorizontal: 24,
     paddingBottom: 40,
   },
   welcomeText: {
-    fontSize: fonts.sizes.huge,
+    fontSize: 50,
     fontFamily: fonts.bold,
     color: colors.white,
-    marginBottom: 8,
+    marginBottom: 28,
   },
   subtitleText: {
     fontSize: fonts.sizes.medium,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 24,
-    paddingTop: 32,
+    paddingTop: 230,
     paddingBottom: 24,
   },
   inputIcon: {

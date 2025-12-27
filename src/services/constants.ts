@@ -24,6 +24,7 @@ export const ROLES = {
   ADMIN: '1',
   SALESMAN: '2',
   NONCHANNEL: '3',
+  DEALER: '4',
 } as const;
 
 export const isNonChannel = (roleId: string | undefined): boolean => {

@@ -22,13 +22,10 @@ export const authService = {
 
   async login(username: string, password: string): Promise<User> {
     try {
-      // First, get OAuth token
       await this.getOAuthToken();
 
-      // Get FCM token (placeholder - implement Firebase later)
       const fcmId = await storage.getFcmId() || 'placeholder-fcm-token';
 
-      // Then, login with credentials
       const response = await apiService.login({
         email: username,
         password,
@@ -38,7 +35,6 @@ export const authService = {
       if (response.status === 1 && response.data) {
         const { data } = response;
         
-        // Save session data
         if (data.session_id) {
           await storage.saveSessionId(data.session_id);
         }
@@ -48,7 +44,7 @@ export const authService = {
         await storage.saveIdRole(data.id_role);
 
         const user: User = {
-          idUser: 0, // API tidak mengembalikan idUser, set default
+          idUser: 0,
           id_role: data.id_role,
           name: data.name,
           email: data.email,
@@ -70,7 +66,6 @@ export const authService = {
     try {
       await apiService.logout();
     } catch (error) {
-      // Ignore logout API errors
     } finally {
       await storage.clearAll();
     }

@@ -7,24 +7,40 @@ import {
   StyleSheet,
   StatusBar,
   ScrollView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { storage } from '../../../services/storage';
 import apiService from '../../../services/api';
 import { User } from '../../../types/user';
+import { DashboardData } from '../../../types/dashboard';
 import { colors } from '../../../config/colors';
 import { fonts } from '../../../config/fonts';
 import MenuCard from '../components/MenuCard';
+import CheckoutWarning from '../components/CheckoutWarning';
+import MonthPicker from '../components/MonthPicker';
+import DashboardStats from '../components/DashboardStats';
+import MyRankCard from '../components/MyRankCard';
+import LeaderboardList from '../components/LeaderboardList';
 import { getImage } from '../../../assets/images';
 import { showSuccess, showError } from '../../../utils/notification';
 
 const HomeFragment: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [checkInStatus, setCheckInStatus] = useState<any>(null);
+  const [selectedMonth, setSelectedMonth] = useState('December 2024');
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      loadDashboardData();
+    }
+  }, [selectedMonth, user]);
 
   const loadData = async () => {
     try {
@@ -37,6 +53,31 @@ const HomeFragment: React.FC = () => {
       }
     } catch (error) {
       console.error('Error loading data:', error);
+    }
+  };
+
+  const loadDashboardData = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      const [month, year] = selectedMonth.split(' ');
+      
+      const response = await apiService.getDashboard({
+        category: 'salesman',
+        month,
+        year,
+        ms_dealer_id: '',
+      });
+
+      if (response.status === 1 && response.data) {
+        setDashboardData(response.data);
+      } else {
+        showError(response.message?.join(', ') || 'Failed to load dashboard data');
+      }
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+      showError('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -74,6 +115,10 @@ const HomeFragment: React.FC = () => {
     console.log('Campaign Promo pressed');
   };
 
+  const handlePhotoPress = (photoUrl: string) => {
+    Alert.alert('Photo', photoUrl);
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
@@ -89,19 +134,6 @@ const HomeFragment: React.FC = () => {
             <Image source={getImage('ic_notification.png')} style={styles.notificationIcon} />
           </TouchableOpacity>
         </View>
-
-        {checkInStatus?.is_checked_in && (
-          <View style={styles.checkoutWarningCard}>
-            <Image source={getImage('ic_warning_yellow.png')} style={styles.warningIcon} />
-            <View style={styles.warningContent}>
-              <Text style={styles.warningText}>You are still checked in</Text>
-              <Text style={styles.dealerText}>at {checkInStatus.dealer_name}</Text>
-            </View>
-            <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-              <Text style={styles.checkoutButtonText}>Check-out</Text>
-            </TouchableOpacity>
-          </View>
-        )}
 
         <View style={styles.menuContainer}>
           <MenuCard
@@ -119,6 +151,48 @@ const HomeFragment: React.FC = () => {
             label="Promo Campaign"
             onPress={handleCampaignPromo}
           />
+        </View>
+
+        <View style={styles.whiteBackground}>
+          <MonthPicker selectedMonth={selectedMonth} onMonthSelect={setSelectedMonth} />
+
+          {checkInStatus?.is_checked_in && (
+            <CheckoutWarning
+              dealerName={checkInStatus.dealer_name}
+              onCheckout={handleCheckout}
+            />
+          )}
+
+          {loading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : (
+            dashboardData && (
+              <>
+                <DashboardStats
+                  target={dashboardData.target}
+                  pencapaian={dashboardData.pencapaian}
+                  totalOmzet={dashboardData.totalOmzet}
+                  produktivitas={dashboardData.produktivitas}
+                  pencapaianCampaign={dashboardData.pencapaianCampaign}
+                  realisasiVisit={dashboardData.realisasiVisit}
+                  efectifitasVisit={dashboardData.efectifitasVisit}
+                />
+
+                {dashboardData.myRank && (
+                  <MyRankCard myRank={dashboardData.myRank} onPhotoPress={handlePhotoPress} />
+                )}
+
+                {dashboardData.salesManRank && dashboardData.salesManRank.length > 0 && (
+                  <LeaderboardList
+                    data={dashboardData.salesManRank}
+                    onPhotoPress={handlePhotoPress}
+                  />
+                )}
+              </>
+            )
+          )}
         </View>
       </ScrollView>
     </View>
@@ -173,56 +247,25 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     tintColor: colors.white,
   },
-  checkoutWarningCard: {
-    backgroundColor: colors.white,
-    marginHorizontal: 24,
-    marginBottom: 24,
-    padding: 16,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4,
-  },
-  warningIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 12,
-    resizeMode: 'contain',
-  },
-  warningContent: {
-    flex: 1,
-  },
-  warningText: {
-    fontSize: fonts.sizes.default,
-    fontFamily: fonts.semibold,
-    color: colors.black,
-  },
-  dealerText: {
-    fontSize: fonts.sizes.small,
-    fontFamily: fonts.regular,
-    color: colors.grayText,
-    marginTop: 2,
-  },
-  checkoutButton: {
-    backgroundColor: '#F5F5F5',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  checkoutButtonText: {
-    fontSize: fonts.sizes.small,
-    fontFamily: fonts.semibold,
-    color: colors.primary,
-  },
   menuContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingHorizontal: 24,
     marginTop: 16,
+    marginBottom: 24,
+  },
+  whiteBackground: {
+    flex: 1,
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
   },
 });
 

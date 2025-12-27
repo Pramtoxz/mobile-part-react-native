@@ -10,11 +10,11 @@ import MyRankCard from '../components/MyRankCard';
 import LeaderboardList from '../components/LeaderboardList';
 import { showError } from '../../../utils/notification';
 
-interface DealerFragmentProps {
+interface SalesmanFragmentProps {
   selectedMonth: string;
 }
 
-const DealerFragment: React.FC<DealerFragmentProps> = ({ selectedMonth }) => {
+const SalesmanFragment: React.FC<SalesmanFragmentProps> = ({ selectedMonth }) => {
   const [user, setUser] = useState<User | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ const DealerFragment: React.FC<DealerFragmentProps> = ({ selectedMonth }) => {
       const [month, year] = selectedMonth.split(' ');
       
       const response = await apiService.getDashboard({
-        category: 'dealer',
+        category: 'salesman',
         month,
         year,
         ms_dealer_id: '',
@@ -141,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DealerFragment;
+export default SalesmanFragment;

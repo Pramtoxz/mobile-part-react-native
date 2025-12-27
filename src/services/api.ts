@@ -1,15 +1,7 @@
-/**
- * API Service for React Native
- * Handles all API calls for Splash, Login, and Dashboard
- */
-
 import axios, { AxiosInstance } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_CONFIG, STORAGE_KEYS } from './constants';
 
-// ============================================
-// Types
-// ============================================
 
 interface APIResponse<T = any> {
   status: number;
@@ -48,10 +40,6 @@ interface UserProfile {
   role: string;
 }
 
-// ============================================
-// Axios Instance
-// ============================================
-
 class APIService {
   private api: AxiosInstance;
 
@@ -64,7 +52,6 @@ class APIService {
       },
     });
 
-    // Request interceptor - Add token
     this.api.interceptors.request.use(
       async (config) => {
         const token = await AsyncStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
@@ -76,7 +63,6 @@ class APIService {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor - Handle errors
     this.api.interceptors.response.use(
       (response) => response,
       async (error) => {
@@ -93,9 +79,6 @@ class APIService {
     );
   }
 
-  // ============================================
-  // Helper Methods
-  // ============================================
 
   private createFormData(data: Record<string, any>): FormData {
     const formData = new FormData();
@@ -122,14 +105,6 @@ class APIService {
     }
   }
 
-  // ============================================
-  // Authentication APIs
-  // ============================================
-
-  /**
-   * Get OAuth token (call this before login)
-   * Uses Basic Auth: webservice / Honda2020~
-   */
   async getOAuthToken(): Promise<APIResponse<OAuthTokenResponse>> {
     return this.handleResponse(
       this.api.post('oauth/token', null, {
@@ -149,43 +124,26 @@ class APIService {
     return this.handleResponse(this.api.post('auth/login', formData));
   }
 
-  /**
-   * Logout
-   */
+
   async logout(): Promise<APIResponse> {
     return this.handleResponse(this.api.post('auth/logout'));
   }
 
-  /**
-   * Forgot password
-   */
   async forgotPassword(email: string): Promise<APIResponse> {
     const formData = this.createFormData({ email });
     return this.handleResponse(this.api.post('auth/forgot-password', formData));
   }
 
-  /**
-   * Renew token
-   */
   async renewToken(password: string): Promise<APIResponse<OAuthTokenResponse>> {
     const formData = this.createFormData({ password });
     return this.handleResponse(this.api.post('oauth/renew', formData));
   }
 
-  // ============================================
-  // Dashboard APIs
-  // ============================================
-
-  /**
-   * Get home data
-   */
   async getHome(): Promise<APIResponse> {
     return this.handleResponse(this.api.get('home'));
   }
 
-  /**
-   * Get dashboard data
-   */
+ 
   async getDashboard(params: {
     category: string;
     month: string;
@@ -196,92 +154,51 @@ class APIService {
     return this.handleResponse(this.api.post('dashboard/index', formData));
   }
 
-  /**
-   * Check current check-in status
-   */
   async checkCheckinStatus(): Promise<APIResponse<CheckInStatus>> {
     return this.handleResponse(this.api.post('sales/check-checkin'));
   }
 
-  /**
-   * Check-out from dealer
-   */
   async checkout(codeVisit: string): Promise<APIResponse> {
     const formData = this.createFormData({ code_visit: codeVisit });
     return this.handleResponse(this.api.post('sales/checkin-checkout', formData));
   }
 
-  /**
-   * Get leaderboard
-   */
   async getLeaderboard(): Promise<APIResponse> {
     return this.handleResponse(this.api.get('leaderboard'));
   }
 
-  // ============================================
-  // Profile APIs
-  // ============================================
 
-  /**
-   * Get user profile
-   */
   async getProfile(): Promise<APIResponse<UserProfile>> {
     return this.handleResponse(this.api.post('profile/profile'));
   }
 
-  /**
-   * Change password
-   */
+
   async changePassword(password: string): Promise<APIResponse> {
     const formData = this.createFormData({ password });
     return this.handleResponse(this.api.post('profile/change-password', formData));
   }
 
-  // ============================================
-  // Notification APIs
-  // ============================================
 
-  /**
-   * Get notifications
-   */
   async getNotifications(page: number = 1): Promise<APIResponse> {
     const formData = this.createFormData({ page });
     return this.handleResponse(this.api.post('dashboard/notice', formData));
   }
 
-  // ============================================
-  // Catalogue APIs
-  // ============================================
 
-  /**
-   * Get catalogue list
-   */
   async getCatalogue(): Promise<APIResponse> {
     return this.handleResponse(this.api.get('catalog/catalog'));
   }
 
-  // ============================================
-  // Promo APIs
-  // ============================================
 
-  /**
-   * Get brosur promo
-   */
   async getBrosurPromo(page: number = 1): Promise<APIResponse> {
     return this.handleResponse(this.api.get('promo/brosure-promo', { params: { page } }));
   }
 
-  /**
-   * Get part promo
-   */
+  
   async getPartPromo(page: number = 1): Promise<APIResponse> {
     return this.handleResponse(this.api.get('promo/part-promo', { params: { page } }));
   }
 }
-
-// ============================================
-// Export Singleton Instance
-// ============================================
 
 export const apiService = new APIService();
 export default apiService;

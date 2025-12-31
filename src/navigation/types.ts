@@ -1,5 +1,7 @@
 export type RootStackParamList = {
-  Splash: undefined;
+  Splash: { showWelcome?: boolean } | undefined;
   Login: undefined;
-  Home: undefined;
+  Home: { showWelcome?: boolean } | undefined;
+  PartNumberSearch: undefined;
+  Cart: undefined;
 };

@@ -6,6 +6,7 @@ export const colors = {
   grayHint: '#999999',
   grayBorder: '#CCCCCC',
   grayInactive: '#838383',
+  grayDivider:'#6d6d6d',
   yellow: '#FFC107',
   transparent: 'transparent',
 } as const;

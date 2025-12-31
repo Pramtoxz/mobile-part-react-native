@@ -9,7 +9,10 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  SafeAreaView,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { storage } from '../../../services/storage';
 import apiService from '../../../services/api';
 import { User } from '../../../types/user';
@@ -24,8 +27,12 @@ import MyRankCard from '../components/MyRankCard';
 import LeaderboardList from '../components/LeaderboardList';
 import { getImage } from '../../../assets/images';
 import { showSuccess, showError } from '../../../utils/notification';
+import { RootStackParamList } from '../../../navigation/types';
+
+type HomeFragmentNavigationProp = StackNavigationProp<RootStackParamList>;
 
 const HomeFragment: React.FC = () => {
+  const navigation = useNavigation<HomeFragmentNavigationProp>();
   const [user, setUser] = useState<User | null>(null);
   const [checkInStatus, setCheckInStatus] = useState<any>(null);
   const [selectedMonth, setSelectedMonth] = useState('December 2024');
@@ -104,7 +111,7 @@ const HomeFragment: React.FC = () => {
   };
 
   const handlePartNumberSearch = () => {
-    console.log('Part Number Search pressed');
+    navigation.navigate('PartNumberSearch');
   };
 
   const handleOrderSuggestion = () => {
@@ -120,11 +127,14 @@ const HomeFragment: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <Image source={getImage('bg_honda.webp')} style={styles.backgroundImage} />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={styles.greetingText}>Hello,</Text>
@@ -195,7 +205,7 @@ const HomeFragment: React.FC = () => {
           )}
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -212,6 +222,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingTop: 50,
+    paddingBottom: 0,
   },
   header: {
     flexDirection: 'row',
@@ -260,6 +271,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 24,
+    paddingBottom: 80,
   },
   loadingContainer: {
     flex: 1,

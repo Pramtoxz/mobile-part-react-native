@@ -57,7 +57,7 @@ const LoginScreen: React.FC = () => {
     setIsLoading(true);
     try {
       await authService.login(username.trim(), password);
-      navigation.replace('Home');
+      navigation.replace('Splash', { showWelcome: true });
     } catch (error: any) {
       showError(error.message || 'An error occurred', 'Login Failed');
     } finally {
@@ -163,8 +163,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 24,
-    paddingTop: 230,
+    paddingTop: 60,
     paddingBottom: 24,
+    minHeight: 550,
   },
   inputIcon: {
     width: 20,

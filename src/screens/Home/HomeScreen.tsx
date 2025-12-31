@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../config/colors';
 import { fonts } from '../../config/fonts';
 import { Image, View, StyleSheet, Alert } from 'react-native';
@@ -7,6 +9,8 @@ import { storage } from '../../services/storage';
 import { isNonChannel } from '../../services/constants';
 import { User } from '../../types/user';
 import { getImage } from '../../assets/images';
+import { showSuccess } from '../../utils/notification';
+import { RootStackParamList } from '../../navigation/types';
 
 const HomeFragment = require('./fragments/HomeFragment').default;
 const CatalogueFragment = require('./fragments/CatalogueFragment').default;
@@ -25,10 +29,20 @@ const TabIcon: React.FC<{ icon: any; focused: boolean }> = ({ icon, focused }) =
 
 const HomeScreen: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
+  const route = useRoute<RouteProp<RootStackParamList, 'Home'>>();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     loadUser();
   }, []);
+
+  useEffect(() => {
+    if (route.params?.showWelcome) {
+      setTimeout(() => {
+        showSuccess('Login successful!', 'Welcome');
+      }, 500);
+    }
+  }, [route.params?.showWelcome]);
 
   const loadUser = async () => {
     const userData = await storage.getUserData();
@@ -49,7 +63,11 @@ const HomeScreen: React.FC = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: {
+          ...styles.tabBar,
+          height: 70 + insets.bottom,
+          paddingBottom: insets.bottom + 5,
+        },
         tabBarLabelStyle: styles.tabLabel,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.grayInactive,
@@ -105,7 +123,7 @@ const HomeScreen: React.FC = () => {
         name="DealerTab"
         component={DealerFragment}
         options={{
-          tabBarLabel: 'Dealer',
+          tabBarLabel: 'Collection',
           tabBarIcon: ({ focused }) => (
             <TabIcon icon={getImage('ic_dealer.png')} focused={focused} />
           ),
@@ -141,9 +159,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderTopWidth: 1,
     borderTopColor: colors.white,
-    height: 110,
-    paddingBottom: 10,
-    paddingTop: 22,
+    height: 70,
+    paddingBottom: 5,
+    paddingTop: 10,
     shadowColor: colors.black,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
@@ -156,18 +174,18 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   tabIcon: {
-    width: 35,
-    height: 35,
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
   },
   centerButton: {
-    width: 90,
-    height: 70,
-    borderRadius: 32,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: colors.black,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -55,
+    marginTop: -30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -175,8 +193,8 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   centerIcon: {
-    width: 35,
-    height: 35,
+    width: 28,
+    height: 28,
     resizeMode: 'contain',
     tintColor: colors.white,
   },

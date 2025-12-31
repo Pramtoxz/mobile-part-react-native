@@ -51,6 +51,7 @@ const IMAGES: Record<string, any> = {
   'es_no_data.webp': require('./icon/es_no_data.webp'),
   'es_done.webp': require('./icon/es_done.webp'),
   'logomd.png': require('./logo/logomd.png'),
+  'ic_cart_response.png': require('./icon/ic_cart_response.png'),
 };
 
 export const getImage = (name: ImageName) => {

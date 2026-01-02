@@ -130,7 +130,7 @@ const PartNumberSearchScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerTop}>
-            <Text style={styles.dealerCode}>12345 - Parts Shop ABC</Text>
+            <Text style={styles.dealerCode}>PT. Menara Agung</Text>
             <View style={styles.headerIcons}>
               <TouchableOpacity style={styles.iconButton} onPress={handleCartPress}>
                 <Image source={getImage('ic_cart_response.png')} style={styles.headerIcon} />
@@ -156,8 +156,8 @@ const PartNumberSearchScreen: React.FC = () => {
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
-            <TouchableOpacity style={styles.uploadButton}>
-              <Image source={getImage('ic_upload.png')} style={styles.uploadIcon} />
+            <TouchableOpacity style={styles.sortButton}>
+              <Image source={getImage('ic_sort_by.png')} style={styles.sortIcon} />
             </TouchableOpacity>
           </View>
         </View>
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0F0F0',
+    backgroundColor: colors.white,
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 48,
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 20,
     height: 20,
-    tintColor: colors.grayText,
+    tintColor: colors.primary,
     marginRight: 8,
   },
   searchInput: {
@@ -452,13 +452,13 @@ const styles = StyleSheet.create({
     color: colors.black,
     padding: 0,
   },
-  uploadButton: {
+  sortButton: {
     padding: 4,
   },
-  uploadIcon: {
+  sortIcon: {
     width: 24,
     height: 24,
-    tintColor: colors.black,
+    tintColor: colors.primary,
   },
   campaignSection: {
     backgroundColor: colors.white,
@@ -479,15 +479,15 @@ const styles = StyleSheet.create({
   },
   seeMoreText: {
     fontSize: fonts.sizes.small,
-    fontFamily: fonts.regular,
-    color: colors.grayText,
+    fontFamily: fonts.bold,
+    color: colors.primary,
   },
   bannerContainer: {
     marginHorizontal: 16,
     height: 180,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.white,
   },
   bannerImage: {
     width: '100%',
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#D0D0D0',
+    backgroundColor: colors.white,
   },
   dotActive: {
     backgroundColor: colors.primary,

@@ -1,6 +1,7 @@
 type ImageName = string;
 
 const IMAGES: Record<string, any> = {
+  //Folder ICON
   'bg_honda.webp': require('./icon/bg_honda.webp'),
   'bg_ss.webp': require('./icon/bg_ss.webp'),
   'bg_ribbon_red_gagal.webp': require('./icon/bg_ribbon_red_gagal.webp'),
@@ -50,8 +51,12 @@ const IMAGES: Record<string, any> = {
   'ic_homepage.png': require('./icon/ic_homepage.png'),
   'es_no_data.webp': require('./icon/es_no_data.webp'),
   'es_done.webp': require('./icon/es_done.webp'),
-  'logomd.png': require('./logo/logomd.png'),
   'ic_cart_response.png': require('./icon/ic_cart_response.png'),
+  'ic_sort_by.png': require('./icon/ic_sort_by.png'),
+
+  //Folder Logo
+    'logomd.png': require('./logo/logomd.png'),
+    'lg_honda.jpg': require('./logo/lg_honda.jpg'),
 };
 
 export const getImage = (name: ImageName) => {

@@ -7,26 +7,20 @@ import {
   StyleSheet,
   StatusBar,
   ScrollView,
-  ActivityIndicator,
-  Alert,
-  SafeAreaView,
+  TextInput,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { storage } from '../../../services/storage';
-import apiService from '../../../services/api';
 import { User } from '../../../types/user';
-import { DashboardData } from '../../../types/dashboard';
 import { colors } from '../../../config/colors';
 import { fonts } from '../../../config/fonts';
-import MenuCard from '../components/MenuCard';
-import CheckoutWarning from '../components/CheckoutWarning';
-import MonthPicker from '../components/MonthPicker';
-import DashboardStats from '../components/DashboardStats';
-import MyRankCard from '../components/MyRankCard';
-import LeaderboardList from '../components/LeaderboardList';
+import CampaignCard from '../components/CampaignCard';
+import StatCard from '../components/StatCard';
+import QuickMenuButton from '../components/QuickMenuButton';
+import OrderCard from '../components/OrderCard';
 import { getImage } from '../../../assets/images';
-import { showSuccess, showError } from '../../../utils/notification';
 import { RootStackParamList } from '../../../navigation/types';
 
 type HomeFragmentNavigationProp = StackNavigationProp<RootStackParamList>;
@@ -34,75 +28,17 @@ type HomeFragmentNavigationProp = StackNavigationProp<RootStackParamList>;
 const HomeFragment: React.FC = () => {
   const navigation = useNavigation<HomeFragmentNavigationProp>();
   const [user, setUser] = useState<User | null>(null);
-  const [checkInStatus, setCheckInStatus] = useState<any>(null);
-  const [selectedMonth, setSelectedMonth] = useState('December 2024');
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadData();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      loadDashboardData();
-    }
-  }, [selectedMonth, user]);
-
   const loadData = async () => {
     try {
       const userData = await storage.getUserData();
       setUser(userData);
-
-      const statusResponse = await apiService.checkCheckinStatus();
-      if (statusResponse.status === 1) {
-        setCheckInStatus(statusResponse.data);
-      }
     } catch (error) {
       console.error('Error loading data:', error);
-    }
-  };
-
-  const loadDashboardData = async () => {
-    if (!user) return;
-
-    try {
-      setLoading(true);
-      const [month, year] = selectedMonth.split(' ');
-      
-      const response = await apiService.getDashboard({
-        category: 'salesman',
-        month,
-        year,
-        ms_dealer_id: '',
-      });
-
-      if (response.status === 1 && response.data) {
-        setDashboardData(response.data);
-      } else {
-        showError(response.message?.join(', ') || 'Failed to load dashboard data');
-      }
-    } catch (error) {
-      console.error('Error loading dashboard:', error);
-      showError('Failed to load dashboard data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCheckout = async () => {
-    if (!checkInStatus?.code_visit) return;
-
-    try {
-      const response = await apiService.checkout(checkInStatus.code_visit);
-      if (response.status === 1) {
-        showSuccess('Check-out successful');
-        setCheckInStatus(null);
-      } else {
-        showError(response.message.join(', '));
-      }
-    } catch (error) {
-      showError('Failed to check-out');
     }
   };
 
@@ -122,87 +58,148 @@ const HomeFragment: React.FC = () => {
     console.log('Campaign Promo pressed');
   };
 
-  const handlePhotoPress = (photoUrl: string) => {
-    Alert.alert('Photo', photoUrl);
+  const handleOrderPress = (orderNumber: string) => {
+    console.log('Order pressed:', orderNumber);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      
+      {/* Background Image */}
       <Image source={getImage('bg_honda.webp')} style={styles.backgroundImage} />
+      
+      {/* Header with gradient background */}
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          <View style={styles.headerTop}>
+            <View style={styles.headerLeft}>
+              <View style={styles.avatarContainer}>
+                <Image source={getImage('lg_honda.jpg')} style={styles.avatar} />
+              </View>
+              <View>
+                <Text style={styles.welcomeText}>SALAM SATU HATI,</Text>
+                <Text style={styles.nameText}>{user?.name || 'PART MOBILE MENARA AGUNG'}</Text>
+              </View>
+            </View>
+            <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationButton}>
+              <Image source={getImage('ic_notification.png')} style={styles.notificationIcon} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.searchContainer}>
+            <Image source={getImage('ic_spring.png')} style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search parts by number or name..."
+              placeholderTextColor="rgba(255, 255, 255, 0.4)"
+            />
+          </View>
+        </View>
+      </View>
 
       <ScrollView 
+        style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.greetingText}>Hello,</Text>
-            <Text style={styles.nameText}>{user?.name || 'User'}</Text>
-          </View>
-          <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationButton}>
-            <Image source={getImage('ic_notification.png')} style={styles.notificationIcon} />
-          </TouchableOpacity>
-        </View>
+        {/* White Content Container */}
+        <View style={styles.whiteContainer}>
+          {/* Quick Menu */}
+          <View style={styles.sectionMenu}>
+            <View style={styles.sectionHeader}>
 
-        <View style={styles.menuContainer}>
-          <MenuCard
-            icon="ic_spring.png"
-            label="Part Number Search"
-            onPress={handlePartNumberSearch}
-          />
-          <MenuCard
-            icon="ic_stock_md.png"
-            label="Order Suggestion"
-            onPress={handleOrderSuggestion}
-          />
-          <MenuCard
-            icon="ic_promotion.png"
-            label="Promo Campaign"
+            </View>
+            <View style={styles.quickMenuContainer}>
+              <QuickMenuButton
+                icon={getImage('ic_spring.png')}
+                label="HGP"
+                backgroundColor={colors.white}
+                onPress={handlePartNumberSearch}
+              />
+              <QuickMenuButton
+                icon={getImage('ic_stock_md.png')}
+                label="Oil"
+                backgroundColor={colors.white}
+                onPress={handleOrderSuggestion}
+              />
+              <QuickMenuButton
+                icon={getImage('ic_promotion.png')}
+                label="Promo"
+                backgroundColor={colors.white}
+                onPress={handleCampaignPromo}
+              />
+              <QuickMenuButton
+                icon={getImage('ic_spring.png')}
+                label="Stock"
+                backgroundColor={colors.white}
+                onPress={handlePartNumberSearch}
+              />
+            </View>
+          </View>
+
+          {/* Campaign Banner */}
+          <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>CURRENT CAMPAIGN</Text>
+            <TouchableOpacity>
+              <Text style={styles.viewAllText}>View All</Text>
+            </TouchableOpacity>
+          </View>
+          <CampaignCard
+            badge="NEW CONTRACT"
+            title="Gear Up & Get Rewarded"
+            description="Ends Dec 31, 2025 • Target: 85% Reach"
+            image={getImage('bg_honda.webp')}
             onPress={handleCampaignPromo}
           />
         </View>
 
-        <View style={styles.whiteBackground}>
-          <MonthPicker selectedMonth={selectedMonth} onMonthSelect={setSelectedMonth} />
-
-          {checkInStatus?.is_checked_in && (
-            <CheckoutWarning
-              dealerName={checkInStatus.dealer_name}
-              onCheckout={handleCheckout}
+        {/* Achievement Status */}
+        <View style={styles.section}>
+          <View style={styles.statsContainer}>
+            <StatCard
+              value="50%"
+              label="Contract Reach"
+              type="progress"
+              progress={50}
             />
-          )}
+            <View style={styles.statSpacer} />
+            <StatCard
+              value="Rp 12.5M"
+              label="Monthly Buy-in"
+              icon={<Image source={getImage('ic_promotion.png')} style={styles.statIcon} />}
+            />
+          </View>
+        </View>
 
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={colors.primary} />
-            </View>
-          ) : (
-            dashboardData && (
-              <>
-                <DashboardStats
-                  target={dashboardData.target}
-                  pencapaian={dashboardData.pencapaian}
-                  totalOmzet={dashboardData.totalOmzet}
-                  produktivitas={dashboardData.produktivitas}
-                  pencapaianCampaign={dashboardData.pencapaianCampaign}
-                  realisasiVisit={dashboardData.realisasiVisit}
-                  efectifitasVisit={dashboardData.efectifitasVisit}
-                />
+        {/* Active Orders */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>ACTIVE ORDERS</Text>
+            <TouchableOpacity>
+              <Text style={styles.trackAllText}>Track All</Text>
+            </TouchableOpacity>
+          </View>
+          <OrderCard
+            orderNumber="PO/ABC/231025/001"
+            status="On Process"
+            statusColor="#F97316"
+            amount="Rp 10.5M"
+            date="25 Oct 2025"
+            onPress={() => handleOrderPress('PO/ABC/231025/001')}
+          />
+          <OrderCard
+            orderNumber="PO/ABC/231025/002"
+            status="On Process"
+            statusColor="#F97316"
+            amount="Rp 10.5M"
+            date="25 Oct 2025"
+            onPress={() => handleOrderPress('PO/ABC/231025/002')}
+          />
+        </View>
 
-                {dashboardData.myRank && (
-                  <MyRankCard myRank={dashboardData.myRank} onPhotoPress={handlePhotoPress} />
-                )}
-
-                {dashboardData.salesManRank && dashboardData.salesManRank.length > 0 && (
-                  <LeaderboardList
-                    data={dashboardData.salesManRank}
-                    onPhotoPress={handlePhotoPress}
-                  />
-                )}
-              </>
-            )
-          )}
+          <View style={styles.bottomSpacer} />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -220,64 +217,156 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  scrollContent: {
-    paddingTop: 50,
-    paddingBottom: 0,
+  headerContainer: {
+    backgroundColor: 'transparent',
+    paddingBottom: 24,
   },
   header: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+  },
+  headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 24,
+    marginBottom: 24,
   },
   headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
   },
-  greetingText: {
-    fontSize: fonts.sizes.medium,
+  avatarContainer: {
+    width: 70,
+    height: 70,
+    borderRadius: 30,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.grayInactive,
+    overflow: 'hidden',
+    marginRight: 12,
+  },
+  avatar: {
+    width: '100%',
+    height: '90%',
+    resizeMode: 'center',
+  },
+  welcomeText: {
+    fontSize: fonts.sizes.tiny,
     fontFamily: fonts.regular,
-    color: colors.white,
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 1.5,
+    marginBottom: 2,
   },
   nameText: {
-    fontSize: fonts.sizes.large,
+    fontSize: fonts.sizes.medium,
     fontFamily: fonts.bold,
     color: colors.white,
-    marginTop: 4,
   },
   notificationButton: {
     width: 40,
     height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   notificationIcon: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
     tintColor: colors.white,
   },
-  menuContainer: {
+  searchContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 24,
-    marginTop: 16,
-    marginBottom: 24,
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    height: 48,
   },
-  whiteBackground: {
+  searchIcon: {
+    width: 18,
+    height: 18,
+    resizeMode: 'contain',
+    tintColor: 'rgba(255, 255, 255, 0.5)',
+    marginRight: 12,
+  },
+  searchInput: {
     flex: 1,
+    fontSize: fonts.sizes.default,
+    fontFamily: fonts.regular,
+    color: colors.white,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingTop: 0,
+    paddingHorizontal: 0,
+  },
+  whiteContainer: {
     backgroundColor: colors.white,
-    borderTopLeftRadius: 24,
+    borderTopLeftRadius: 32,
     borderTopRightRadius: 24,
     paddingTop: 24,
-    paddingBottom: 80,
+    paddingHorizontal: 24,
+    marginTop: 32,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  section: {
+    marginBottom: 24,
+  },
+    sectionMenu: {
+    marginBottom: 24,
+    backgroundColor: '#DA291C',
+    marginTop: 10,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius:22,
+    borderBottomLeftRadius:22,
+    borderBottomRightRadius: 20
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 40,
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: fonts.sizes.small,
+    fontFamily: fonts.bold,
+    color: colors.grayText,
+    letterSpacing: 1.2,
+  },
+  viewAllText: {
+    fontSize: fonts.sizes.small,
+    fontFamily: fonts.bold,
+    color: colors.primary,
+  },
+  trackAllText: {
+    fontSize: fonts.sizes.small,
+    fontFamily: fonts.bold,
+    color: colors.primary,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+  },
+  statSpacer: {
+    width: 16,
+  },
+  statIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+    tintColor: colors.primary,
+  },
+  quickMenuContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  bottomSpacer: {
+    height: 100,
   },
 });
 

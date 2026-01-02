@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../config/colors';
 import { fonts } from '../../config/fonts';
-import { Image, View, StyleSheet, Alert } from 'react-native';
-import { storage } from '../../services/storage';
-import { isNonChannel } from '../../services/constants';
-import { User } from '../../types/user';
+import { Image, View, StyleSheet } from 'react-native';
 import { getImage } from '../../assets/images';
 import { showSuccess } from '../../utils/notification';
 import { RootStackParamList } from '../../navigation/types';
@@ -15,7 +12,6 @@ import { RootStackParamList } from '../../navigation/types';
 const HomeFragment = require('./fragments/HomeFragment').default;
 const CatalogueFragment = require('./fragments/CatalogueFragment').default;
 const OrderFragment = require('./fragments/OrderFragment').default;
-const DealerFragment = require('./fragments/DealerFragment').default;
 const ProfileFragment = require('./fragments/ProfileFragment').default;
 
 const Tab = createBottomTabNavigator();
@@ -28,13 +24,8 @@ const TabIcon: React.FC<{ icon: any; focused: boolean }> = ({ icon, focused }) =
 );
 
 const HomeScreen: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
   const route = useRoute<RouteProp<RootStackParamList, 'Home'>>();
   const insets = useSafeAreaInsets();
-
-  useEffect(() => {
-    loadUser();
-  }, []);
 
   useEffect(() => {
     if (route.params?.showWelcome) {
@@ -43,21 +34,6 @@ const HomeScreen: React.FC = () => {
       }, 500);
     }
   }, [route.params?.showWelcome]);
-
-  const loadUser = async () => {
-    const userData = await storage.getUserData();
-    setUser(userData);
-  };
-
-  const handleTabPress = (routeName: string, navigation: any) => {
-    if (isNonChannel(user?.id_role)) {
-      if (routeName === 'OrderTab' || routeName === 'DealerTab') {
-        Alert.alert('Access Denied', "You don't have access to this feature");
-        return false;
-      }
-    }
-    return true;
-  };
 
   return (
     <Tab.Navigator
@@ -90,7 +66,7 @@ const HomeScreen: React.FC = () => {
         name="CatalogueTab"
         component={CatalogueFragment}
         options={{
-          tabBarLabel: 'Catalogue',
+          tabBarLabel: 'Order',
           tabBarIcon: ({ focused }) => (
             <TabIcon
               icon={getImage('ic_menu_katalog_en.png')}
@@ -103,39 +79,14 @@ const HomeScreen: React.FC = () => {
         name="OrderTab"
         component={OrderFragment}
         options={{
-          tabBarLabel: 'Order',
-          tabBarIcon: ({ focused }) => (
-            <View style={styles.centerButton}>
-              <Image source={getImage('ic_order_white.png')} style={styles.centerIcon} />
-            </View>
-          ),
-          tabBarButton: isNonChannel(user?.id_role) ? () => null : undefined,
-        }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            if (!handleTabPress('OrderTab', navigation)) {
-              e.preventDefault();
-            }
-          },
-        })}
-      />
-      <Tab.Screen
-        name="DealerTab"
-        component={DealerFragment}
-        options={{
           tabBarLabel: 'Collection',
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon={getImage('ic_dealer.png')} focused={focused} />
+          <TabIcon
+              icon={getImage('ic_menu_katalog_en.png')}
+              focused={focused}
+            />
           ),
-          tabBarButton: isNonChannel(user?.id_role) ? () => null : undefined,
         }}
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            if (!handleTabPress('DealerTab', navigation)) {
-              e.preventDefault();
-            }
-          },
-        })}
       />
       <Tab.Screen
         name="ProfileTab"

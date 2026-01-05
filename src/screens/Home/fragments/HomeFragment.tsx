@@ -64,31 +64,52 @@ const HomeFragment: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-      
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
+
       {/* Background Image */}
-      <Image source={getImage('bg_honda.webp')} style={styles.backgroundImage} />
-      
+      <Image
+        source={getImage('bg_honda.webp')}
+        style={styles.backgroundImage}
+      />
+
       {/* Header with gradient background */}
       <View style={styles.headerContainer}>
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <View style={styles.headerLeft}>
               <View style={styles.avatarContainer}>
-                <Image source={getImage('lg_honda.jpg')} style={styles.avatar} />
+                <Image
+                  source={getImage('lg_honda.jpg')}
+                  style={styles.avatar}
+                />
               </View>
               <View>
                 <Text style={styles.welcomeText}>SALAM SATU HATI,</Text>
-                <Text style={styles.nameText}>{user?.name || 'PART MOBILE MENARA AGUNG'}</Text>
+                <Text style={styles.nameText}>
+                  {user?.name || 'PART MOBILE MENARA AGUNG'}
+                </Text>
               </View>
             </View>
-            <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationButton}>
-              <Image source={getImage('ic_notification.png')} style={styles.notificationIcon} />
+            <TouchableOpacity
+              onPress={handleNotificationPress}
+              style={styles.notificationButton}
+            >
+              <Image
+                source={getImage('ic_notification.png')}
+                style={styles.notificationIcon}
+              />
             </TouchableOpacity>
           </View>
 
           <View style={styles.searchContainer}>
-            <Image source={getImage('ic_spring.png')} style={styles.searchIcon} />
+            <Image
+              source={getImage('ic_spring.png')}
+              style={styles.searchIcon}
+            />
             <TextInput
               style={styles.searchInput}
               placeholder="Search parts by number or name..."
@@ -98,7 +119,7 @@ const HomeFragment: React.FC = () => {
         </View>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -107,9 +128,7 @@ const HomeFragment: React.FC = () => {
         <View style={styles.whiteContainer}>
           {/* Quick Menu */}
           <View style={styles.sectionMenu}>
-            <View style={styles.sectionHeader}>
-
-            </View>
+            <View style={styles.sectionHeader}></View>
             <View style={styles.quickMenuContainer}>
               <QuickMenuButton
                 icon={getImage('ic_spring.png')}
@@ -140,64 +159,73 @@ const HomeFragment: React.FC = () => {
 
           {/* Campaign Banner */}
           <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>CURRENT CAMPAIGN</Text>
-            <TouchableOpacity>
-              <Text style={styles.viewAllText}>View All</Text>
-            </TouchableOpacity>
-          </View>
-          <CampaignCard
-            badge="NEW CONTRACT"
-            title="Gear Up & Get Rewarded"
-            description="Ends Dec 31, 2025 • Target: 85% Reach"
-            image={getImage('bg_honda.webp')}
-            onPress={handleCampaignPromo}
-          />
-        </View>
-
-        {/* Achievement Status */}
-        <View style={styles.section}>
-          <View style={styles.statsContainer}>
-            <StatCard
-              value="50%"
-              label="Contract Reach"
-              type="progress"
-              progress={50}
-            />
-            <View style={styles.statSpacer} />
-            <StatCard
-              value="Rp 12.5M"
-              label="Monthly Buy-in"
-              icon={<Image source={getImage('ic_promotion.png')} style={styles.statIcon} />}
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>CURRENT CAMPAIGN</Text>
+              <TouchableOpacity>
+                <Text style={styles.viewAllText}>View All</Text>
+              </TouchableOpacity>
+            </View>
+            <CampaignCard
+              badge="NEW CONTRACT"
+              title="Gear Up & Get Rewarded"
+              description="Ends Dec 31, 2025 • Target: 85% Reach"
+              image={getImage('bg_honda.webp')}
+              onPress={handleCampaignPromo}
             />
           </View>
-        </View>
 
-        {/* Active Orders */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>ACTIVE ORDERS</Text>
-            <TouchableOpacity>
-              <Text style={styles.trackAllText}>Track All</Text>
-            </TouchableOpacity>
+          {/* Achievement Status */}
+          <View style={styles.section}>
+            <View style={styles.statsContainer}>
+              <StatCard
+                value="50%"
+                label="Delivery Progres"
+                icon={
+                  <Image
+                    source={getImage('ic_pin_map.png')}
+                    style={styles.statIconDel}
+                  />
+                }
+              />
+              <View style={styles.statSpacer} />
+              <StatCard
+                value="Rp xx.xxx,xx"
+                label="Monthly Buy-in"
+                icon={
+                  <Image
+                    source={getImage('ic_checklist_enable.png')}
+                    style={styles.statIcon}
+                  />
+                }
+              />
+            </View>
           </View>
-          <OrderCard
-            orderNumber="PO/ABC/231025/001"
-            status="On Process"
-            statusColor="#F97316"
-            amount="Rp 10.5M"
-            date="25 Oct 2025"
-            onPress={() => handleOrderPress('PO/ABC/231025/001')}
-          />
-          <OrderCard
-            orderNumber="PO/ABC/231025/002"
-            status="On Process"
-            statusColor="#F97316"
-            amount="Rp 10.5M"
-            date="25 Oct 2025"
-            onPress={() => handleOrderPress('PO/ABC/231025/002')}
-          />
-        </View>
+
+          {/* Active Orders */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>ACTIVE ORDERS</Text>
+              <TouchableOpacity>
+                <Text style={styles.trackAllText}>Track All</Text>
+              </TouchableOpacity>
+            </View>
+            <OrderCard
+              orderNumber="PO/ABC/231025/001"
+              status="On Process"
+              statusColor="#F97316"
+              amount="Rp 10.5M"
+              date="25 Oct 2025"
+              onPress={() => handleOrderPress('PO/ABC/231025/001')}
+            />
+            <OrderCard
+              orderNumber="PO/ABC/231025/002"
+              status="On Process"
+              statusColor="#F97316"
+              amount="Rp 10.5M"
+              date="25 Oct 2025"
+              onPress={() => handleOrderPress('PO/ABC/231025/002')}
+            />
+          </View>
 
           <View style={styles.bottomSpacer} />
         </View>
@@ -318,14 +346,14 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 24,
   },
-    sectionMenu: {
+  sectionMenu: {
     marginBottom: 24,
     backgroundColor: '#DA291C',
     marginTop: 10,
     borderTopLeftRadius: 22,
-    borderTopRightRadius:22,
-    borderBottomLeftRadius:22,
-    borderBottomRightRadius: 20
+    borderTopRightRadius: 22,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 20,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -355,11 +383,15 @@ const styles = StyleSheet.create({
   statSpacer: {
     width: 16,
   },
+  statIconDel: {
+    width: 34,
+    height: 34,
+    resizeMode: 'center',
+  },
   statIcon: {
     width: 24,
     height: 24,
-    resizeMode: 'contain',
-    tintColor: colors.primary,
+    resizeMode: 'center',
   },
   quickMenuContainer: {
     flexDirection: 'row',

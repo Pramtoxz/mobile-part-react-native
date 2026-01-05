@@ -53,10 +53,12 @@ const IMAGES: Record<string, any> = {
   'es_done.webp': require('./icon/es_done.webp'),
   'ic_cart_response.png': require('./icon/ic_cart_response.png'),
   'ic_sort_by.png': require('./icon/ic_sort_by.png'),
+  'ic_checklist_enable.png': require('./icon/ic_checklist_enable.png'),
+  'ic_pin_map.png': require('./icon/ic_pin_map.png'),
 
   //Folder Logo
-    'logomd.png': require('./logo/logomd.png'),
-    'lg_honda.jpg': require('./logo/lg_honda.jpg'),
+  'logomd.png': require('./logo/logomd.png'),
+  'lg_honda.jpg': require('./logo/lg_honda.jpg'),
 };
 
 export const getImage = (name: ImageName) => {

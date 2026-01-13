@@ -125,6 +125,7 @@ const PartNumberSearchScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+         <Image source={getImage('bg_honda.webp')} style={styles.backgroundImage} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
@@ -352,7 +353,7 @@ const PartNumberSearchScreen: React.FC = () => {
                       style={styles.qtyButton}
                       onPress={decrementQty}
                     >
-                      <Text style={styles.qtyButtonText}>−</Text>
+                      <Text style={styles.qtyButtonText}>-</Text>
                     </TouchableOpacity>
                     <Text style={styles.qtyValue}>{quantity}</Text>
                     <TouchableOpacity 
@@ -384,8 +385,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
   header: {
-    backgroundColor: colors.white,
     paddingHorizontal: 16,
     paddingTop: 60,
     paddingBottom: 16,
@@ -399,7 +405,7 @@ const styles = StyleSheet.create({
   dealerCode: {
     fontSize: fonts.sizes.medium,
     fontFamily: fonts.semibold,
-    color: colors.black,
+    color: colors.white,
   },
   headerIcons: {
     flexDirection: 'row',
@@ -412,13 +418,13 @@ const styles = StyleSheet.create({
   headerIcon: {
     width: 24,
     height: 24,
-    tintColor: colors.black,
+    tintColor: colors.white,
   },
   cartBadge: {
     position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.black,
     borderRadius: 10,
     minWidth: 18,
     height: 18,

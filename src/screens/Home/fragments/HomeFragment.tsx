@@ -132,25 +132,51 @@ const HomeFragment: React.FC = () => {
             <View style={styles.quickMenuContainer}>
               <QuickMenuButton
                 icon={getImage('ic_spring.png')}
-                label="HGP"
+                label="PARTS"
                 backgroundColor={colors.white}
                 onPress={handlePartNumberSearch}
               />
               <QuickMenuButton
-                icon={getImage('ic_stock_md.png')}
-                label="Oil"
+                icon={getImage('ic_book_knowledge.png')}
+                label="CATALOGUE"
                 backgroundColor={colors.white}
                 onPress={handleOrderSuggestion}
               />
               <QuickMenuButton
                 icon={getImage('ic_promotion.png')}
-                label="Promo"
+                label="PROMO"
                 backgroundColor={colors.white}
                 onPress={handleCampaignPromo}
               />
               <QuickMenuButton
+                icon={getImage('ic_cart_response.png')}
+                label="CART"
+                backgroundColor={colors.white}
+                onPress={handlePartNumberSearch}
+              />
+            </View>
+            <View style={styles.quickMenuContainer}>
+              <QuickMenuButton
                 icon={getImage('ic_spring.png')}
-                label="Stock"
+                label="PARTS"
+                backgroundColor={colors.white}
+                onPress={handlePartNumberSearch}
+              />
+              <QuickMenuButton
+                icon={getImage('ic_stock_md.png')}
+                label="CATALOGUE"
+                backgroundColor={colors.white}
+                onPress={handleOrderSuggestion}
+              />
+              <QuickMenuButton
+                icon={getImage('ic_promotion.png')}
+                label="PROMO"
+                backgroundColor={colors.white}
+                onPress={handleCampaignPromo}
+              />
+              <QuickMenuButton
+                icon={getImage('ic_wa.png')}
+                label="CHAT ME"
                 backgroundColor={colors.white}
                 onPress={handlePartNumberSearch}
               />
@@ -282,7 +308,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: fonts.sizes.tiny,
     fontFamily: fonts.regular,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: colors.white,
     letterSpacing: 1.5,
     marginBottom: 2,
   },

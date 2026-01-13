@@ -55,6 +55,8 @@ const IMAGES: Record<string, any> = {
   'ic_sort_by.png': require('./icon/ic_sort_by.png'),
   'ic_checklist_enable.png': require('./icon/ic_checklist_enable.png'),
   'ic_pin_map.png': require('./icon/ic_pin_map.png'),
+  'ic_wa.png': require('./icon/ic_wa.png'),
+  'ic_book_knowledge.png': require('./icon/ic_book_knowledge.png'),
 
   //Folder Logo
   'logomd.png': require('./logo/logomd.png'),
